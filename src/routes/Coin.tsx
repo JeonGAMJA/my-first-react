@@ -7,10 +7,10 @@ import {
   useParams,
   useRouteMatch,
 } from "react-router-dom";
-import { styled } from "styled-components";
+import styled from "styled-components";
 import Price from "./Price";
 import Chart from "./Chart";
-import { fetchCoinInfo } from "../api";
+import { fetchCoinInfo, fetchCoinTickers } from "../api";
 import { useQuery } from "react-query";
 
 const Title = styled.h1`
@@ -157,25 +157,8 @@ function Coin() {
   );
   const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(
     ["tickers", coinId],
-    () => fetchCoinInfo(coinId)
+    () => fetchCoinTickers(coinId)
   );
-  // const [loading, setLoading] = useState(true);
-  // const [info, setInfo] = useState<InfoData>();
-  // const [priceInfo, setPriceInfo] = useState<PriceData>();
-  // useEffect(() => {
-  //   (async () => {
-  //     const infoData = await (
-  //       await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
-  //     ).json();
-  //     console.log(infoData);
-  //     const priceData = await (
-  //       await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
-  //     ).json();
-  //     setInfo(infoData);
-  //     setPriceInfo(priceData);
-  //     setLoading(false);
-  //   })();
-  // }, [coinId]);
 
   const loading = infoLoading || tickersLoading;
   return (
@@ -223,11 +206,11 @@ function Coin() {
             </Tab>
           </Tabs>
           <Switch>
-            <Route path={`/${coinId}/price`}>
+            <Route path={`/:coinId/price`}>
               <Price />
             </Route>
-            <Route path={`/${coinId}/chart`}>
-              <Chart />
+            <Route path={`/:coinId/chart`}>
+              <Chart coinId={coinId} />
             </Route>
           </Switch>
         </>
